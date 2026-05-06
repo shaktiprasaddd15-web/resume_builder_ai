@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AI Resume Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+:root {
+  --primary: #1f3a5f;
+  --accent: #f3e7df;
+  --text: #222;
+  --muted: #6b6b6b;
+  --border: #e4e4e4;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f6f7f9;
+  color: var(--text);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: 100vh;
+}
+
+/* LEFT FORM PANEL */
+.form-panel {
+  background: white;
+  padding: 32px;
+  border-right: 1px solid var(--border);
+}
+
+.form-panel h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.form-panel p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin: 14px 0 6px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+button {
+  margin-top: 24px;
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.95;
+}
+
+/* RIGHT PREVIEW PANEL */
+.preview-panel {
+  background: #eaeaea;
+  padding: 40px;
+}
+
+.preview {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  display: grid;
+  grid-template-columns: 35% 65%;
+  min-height: 1000px;
+}
+
+/* LEFT RESUME COLUMN */
+.resume-left {
+  background: var(--accent);
+  padding: 32px;
+}
+
+.resume-left h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.resume-left h3 {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.section {
+  margin-top: 26px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.section ul {
+  padding-left: 16px;
+  margin: 0;
+}
+
+.section li {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+/* RIGHT RESUME COLUMN */
+.resume-right {
+  padding: 36px;
+}
+
+.block-title {
+  font-size: 14px;
+  font-weight: 700;
+  border-bottom: 2px solid #000;
+  display: inline-block;
+  padding-bottom: 4px;
+  margin-bottom: 14px;
+}
+
+.job {
+  margin-bottom: 20px;
+}
+
+.job-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.job-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.job-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #444;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LEFT INPUT PANEL -->
+  <div class="form-panel">
+    <h1>AI Resume Builder</h1>
+    <p>Resume.io style template</p>
+
+    <label>Name</label>
+    <input id="name" placeholder="Sandra Miller">
+
+    <label>Role</label>
+    <input id="role" placeholder="Senior Events Manager">
+
+    <label>Summary</label>
+    <textarea id="summary"></textarea>
+
+    <label>Skills (comma separated)</label>
+    <textarea id="skills"></textarea>
+
+    <label>Experience</label>
+    <textarea id="experience"></textarea>
+
+    <label>Education</label>
+    <textarea id="education"></textarea>
+
+    <label>Template</label>
+    <select id="template">
+      <option value="resumeio">Resume.io</option>
+      <option value="modern">Modern</option>
+      <option value="ats">ATS</option>
+    </select>
+
+    <button onclick="generate()">Generate Resume</button>
+  </div>
+
+  <!-- RIGHT PREVIEW PANEL -->
+  <div class="preview-panel">
+    <div class="preview">
+      <div class="resume-left">
+        <h2 id="p-name">Sandra Miller</h2>
+        <h3 id="p-role">Senior Events Manager</h3>
+
+        <div class="section">
+          <div class="section-title">PROFILE</div>
+          <p id="p-summary" style="font-size:13px;"></p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">SKILLS</div>
+          <ul id="p-skills"></ul>
+        </div>
+      </div>
+
+      <div class="resume-right">
+        <div class="block-title">EXPERIENCE</div>
+        <div id="p-experience"></div>
+
+        <div class="block-title" style="margin-top:30px;">EDUCATION</div>
+        <div id="p-education"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function generate() {
+  // Preview update
+  p-name.innerText = name.value;
+  p-role.innerText = role.value;
+  p-summary.innerText = summary.value;
+
+  p-skills.innerHTML = "";
+  skills.value.split(",").forEach(s => {
+    const li = document.createElement("li");
+    li.innerText = s.trim();
+    p-skills.appendChild(li);
+  });
+
+  p-experience.innerHTML = `<div class="job-desc">${experience.value}</div>`;
+  p-education.innerHTML = `<div class="job-desc">${education.value}</div>`;
+
+  // Backend call
+  fetch(`http://127.0.0.1:8000/generate-resume?template=${template.value}`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: name.value,
+      role: role.value,
+      skills: skills.value,
+      experience: experience.value,
+      education: education.value
+    })
+  });
+}
+</script>
+
+</body>
+</html>

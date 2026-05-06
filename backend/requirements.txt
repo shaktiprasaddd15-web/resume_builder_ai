@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+python-dotenv
+groq
+reportlab
+pydantic
+requests
+python-multipart
+pypdf
